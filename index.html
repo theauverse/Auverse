@@ -167,6 +167,50 @@ footer {
   background: linear-gradient(145deg, #172044, #30204e, #090b18);
   border: 1px solid #8271c9;
 }
+  /* TARJETAS DE HISTORIAS */
+.stories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  max-width: 1000px;
+  margin: 40px auto 0;
+  padding: 0 15px;
+}
+
+.story-card {
+  background: linear-gradient(160deg, #21132f, #120b1c);
+  border: 1px solid #49305f;
+  border-radius: 16px;
+  padding: 18px;
+  text-align: left;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+}
+
+.story-card h3 {
+  color: #e2c5ff;
+  font-size: 22px;
+  margin: 12px 0;
+}
+
+.story-card p {
+  color: #c5b5d4;
+  font: 14px/1.7 Arial, sans-serif;
+}
+
+.story-card .genre {
+  display: inline-block;
+  color: #d6aaff;
+  font: 11px Arial, sans-serif;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.story-card .author {
+  display: block;
+  color: #a98bbd;
+  font: 12px Arial, sans-serif;
+  margin: 15px 0;
+}
 </style>
 </head>
 
