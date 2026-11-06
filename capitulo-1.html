@@ -119,6 +119,12 @@ body.claro .volver {
     </div>
 
   </main>
+<script>
+  const temaGuardado = localStorage.getItem("auverse-tema");
 
+  if (temaGuardado === "claro") {
+    document.body.classList.add("claro");
+  }
+</script>
 </body>
 </html>
