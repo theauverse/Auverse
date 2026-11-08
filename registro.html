@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear cuenta | AUVERSE</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #100b1d;
+      color: #f5efff;
+      font-family: Arial, sans-serif;
+    }
+
+    .registro {
+      width: 100%;
+      max-width: 420px;
+      padding: 32px 25px;
+      background: #1c1430;
+      border: 1px solid #594080;
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: 0 0 30px #8b5cf633;
+    }
+
+    h1 {
+      color: #c9a7ff;
+      letter-spacing: 3px;
+    }
+
+    p {
+      color: #c9bfd9;
+      line-height: 1.6;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 9px 0;
+      border: 1px solid #594080;
+      border-radius: 9px;
+      background: #100b1d;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 15px;
+      border: 0;
+      border-radius: 9px;
+      background: #9b70dc;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+    }
+
+    #mensaje {
+      margin-top: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    a {
+      color: #c9a7ff;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="registro">
+    <h1>AUVERSE</h1>
+    <p>Un universo de historias por descubrir.</p>
+    <h2>Crear cuenta</h2>
+
+    <form id="formulario">
+      <input
+        type="email"
+        id="correo"
+        placeholder="Tu correo electrónico"
+        autocomplete="email"
+        required
+      >
+
+      <input
+        type="password"
+        id="contrasena"
+        placeholder="Contraseña (mínimo 8 caracteres)"
+        autocomplete="new-password"
+        minlength="8"
+        required
+      >
+
+      <button type="submit" id="boton">Registrarme</button>
+    </form>
+
+    <p id="mensaje" role="status"></p>
+    <p><a href="index.html">Volver a AUVERSE</a></p>
+  </main>
+
+  <script>
+    const SUPABASE_URL =
+      'https://yahogjmwrvpqnhdvszxx.supabase.co';
+
+    const SUPABASE_KEY =
+      'sb_publishable_';
+
+    const cliente = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const formulario = document.getElementById('formulario');
+    const mensaje = document.getElementById('mensaje');
+    const boton = document.getElementById('boton');
+
+    formulario.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+
+      const email = document.getElementById('correo').value.trim();
+      const password = document.getElementById('contrasena').value;
+
+      boton.disabled = true;
+      mensaje.textContent = 'Creando tu cuenta...';
+
+      const { data, error } = await cliente.auth.signUp({
+        email: email,
+        password: password
+      });
+
+      boton.disabled = false;
+
+      if (error) {
+        mensaje.textContent = 'No pudimos crear tu cuenta: ' + error.message;
+        return;
+      }
+
+      mensaje.textContent =
+        '¡Tu registro fue recibido! Revisá tu correo para confirmar la cuenta.';
+      
+      formulario.reset();
+    });
+  </script>
+</body>
+</html>
