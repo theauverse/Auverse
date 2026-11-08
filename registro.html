@@ -142,9 +142,12 @@
       mensaje.textContent = 'Creando tu cuenta...';
 
       const { data, error } = await cliente.auth.signUp({
-        email: email,
-        password: password
-      });
+  email: email,
+  password: password,
+  options: {
+    emailRedirectTo: 'https://theauverse.github.io/Auverse/'
+  }
+});
 
       boton.disabled = false;
 
