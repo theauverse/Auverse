@@ -287,7 +287,19 @@ footer {
 <footer>
   ✦ AUVERSE — Cada historia, un universo. ✦
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+  const SUPABASE_URL = 'https://yahogjmwrvpqnhdvszxx.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_';
+
+  const { createClient } = supabase;
+
+  const auverseDB = createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+</script>
 </body>
   </html>
 
