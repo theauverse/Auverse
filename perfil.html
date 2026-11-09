@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi perfil | AUVERSE</title>
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #100b1c;
+      color: #f5efff;
+      font-family: Arial, sans-serif;
+    }
+
+    .contenedor {
+      width: 85%;
+      max-width: 400px;
+      padding: 30px;
+      border-radius: 18px;
+      background: #211633;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      color: #c9a7ff;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin: 12px 0;
+      border: 1px solid #7655a8;
+      border-radius: 8px;
+      background: #160f24;
+      color: white;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #9b70d6;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    a {
+      color: #c9a7ff;
+    }
+
+    #mensaje {
+      margin-top: 15px;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="contenedor">
+    <h1>Mi perfil</h1>
+    <p>Elegí el seudónimo con el que querés publicar en AUVERSE.</p>
+
+    <form id="formulario">
+      <input
+        type="text"
+        id="seudonimo"
+        placeholder="Tu seudónimo"
+        minlength="3"
+        maxlength="30"
+        required
+      >
+
+      <button type="submit" id="boton">Guardar seudónimo</button>
+    </form>
+
+    <p id="mensaje">Cargando tu perfil...</p>
+    <p><a href="index.html">Volver a AUVERSE</a></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL =
+      'https://yahogjmwrvpqnhdvszxx.supabase.co';
+
+    const SUPABASE_KEY =
+      'sb_publishable_IO_3yIJhgIsvqO2jHoqfMQ_KBfZyX_Y';
+
+    const cliente = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const formulario = document.getElementById('formulario');
+    const campo = document.getElementById('seudonimo');
+    const mensaje = document.getElementById('mensaje');
+    const boton = document.getElementById('boton');
+
+    let usuarioActual;
+
+    async function cargarPerfil() {
+      const { data: sesionData, error: sesionError } =
+        await cliente.auth.getUser();
+
+      if (sesionError || !sesionData.user) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      usuarioActual = sesionData.user;
+
+      const { data, error } = await cliente
+        .from('profiles')
+        .select('username')
+        .eq('id', usuarioActual.id)
+        .single();
+
+      if (error) {
+        mensaje.textContent =
+          'No pudimos cargar tu perfil: ' + error.message;
+        return;
+      }
+
+      campo.value = data.username;
+      mensaje.textContent = '¡Tu perfil está listo!';
+    }
+
+    formulario.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+
+      const seudonimo = campo.value.trim();
+
+      if (seudonimo.length < 3) {
+        mensaje.textContent =
+          'El seudónimo debe tener al menos 3 caracteres.';
+        return;
+      }
+
+      boton.disabled = true;
+      mensaje.textContent = 'Guardando...';
+
+      const { error } = await cliente
+        .from('profiles')
+        .update({ username: seudonimo })
+        .eq('id', usuarioActual.id);
+
+      boton.disabled = false;
+
+      if (error) {
+        mensaje.textContent =
+          'No pudimos guardar el seudónimo: ' + error.message;
+        return;
+      }
+
+      mensaje.textContent = '¡Tu seudónimo se guardó correctamente!';
+    });
+
+    cargarPerfil();
+  </script>
+</body>
+</html>
