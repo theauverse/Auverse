@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión | AUVERSE</title>
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #100b1c;
+      color: #f5efff;
+      font-family: Arial, sans-serif;
+    }
+
+    .contenedor {
+      width: 85%;
+      max-width: 380px;
+      padding: 30px;
+      border-radius: 18px;
+      background: #211633;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      color: #c9a7ff;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin: 10px 0;
+      border: 1px solid #7655a8;
+      border-radius: 8px;
+      background: #160f24;
+      color: white;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #9b70d6;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    a {
+      color: #c9a7ff;
+    }
+
+    #mensaje {
+      margin-top: 15px;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="contenedor">
+    <h1>AUVERSE</h1>
+    <p>Bienvenida/o de nuevo.</p>
+
+    <form id="formulario">
+      <input
+        type="email"
+        id="correo"
+        placeholder="Correo electrónico"
+        required
+      >
+
+      <input
+        type="password"
+        id="contrasena"
+        placeholder="Contraseña"
+        required
+      >
+
+      <button type="submit" id="boton">
+        Iniciar sesión
+      </button>
+    </form>
+
+    <p id="mensaje"></p>
+
+    <p>¿Todavía no tenés cuenta?
+      <a href="registro.html">Registrate</a>
+    </p>
+
+    <p><a href="index.html">Volver al inicio</a></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL =
+      'https://yahogjmwrvpqnhdvszxx.supabase.co';
+
+    const SUPABASE_KEY =
+      'sb_publishable_IO_3yIJhgIsvqO2jHoqfMQ_KBfZyX_Y';
+
+    const cliente = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const formulario = document.getElementById('formulario');
+    const mensaje = document.getElementById('mensaje');
+    const boton = document.getElementById('boton');
+
+    formulario.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+
+      const email = document.getElementById('correo').value.trim();
+      const password = document.getElementById('contrasena').value;
+
+      boton.disabled = true;
+      mensaje.textContent = 'Ingresando...';
+
+      const { data, error } = await cliente.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      boton.disabled = false;
+
+      if (error) {
+        mensaje.textContent = 'No pudimos iniciar sesión: ' + error.message;
+        return;
+      }
+
+      mensaje.textContent = '¡Bienvenida/o a AUVERSE!';
+
+      window.location.href =
+        'https://theauverse.github.io/Auverse/';
+    });
+  </script>
+</body>
+</html>
