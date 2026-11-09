@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enviar una historia | AUVERSE</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 25px 0;
+      min-height: 100vh;
+      background: #100b1c;
+      color: #f5efff;
+      font-family: Arial, sans-serif;
+    }
+
+    .contenedor {
+      width: 88%;
+      max-width: 480px;
+      margin: 30px auto;
+      padding: 25px;
+      box-sizing: border-box;
+      border-radius: 18px;
+      background: #211633;
+    }
+
+    h1 {
+      color: #c9a7ff;
+      text-align: center;
+    }
+
+    p {
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      margin-top: 18px;
+      margin-bottom: 7px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      box-sizing: border-box;
+      border: 1px solid #7655a8;
+      border-radius: 8px;
+      background: #160f24;
+      color: white;
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 22px;
+      border: none;
+      border-radius: 8px;
+      background: #9b70d6;
+      color: white;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    a {
+      color: #c9a7ff;
+    }
+
+    #mensaje {
+      margin-top: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .nota {
+      padding: 12px;
+      border-radius: 8px;
+      background: #302044;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="contenedor">
+    <h1>Compartí tu universo</h1>
+
+    <p>
+      Este es el espacio para presentar tu historia a la comunidad AUVERSE.
+    </p>
+
+    <p class="nota">
+      Todas las historias pasan por una revisión de la administración.
+      Tu AU no será publicado hasta recibir aprobación.
+    </p>
+
+    <form id="formulario">
+
+      <label for="titulo">Título de tu historia</label>
+      <input
+        type="text"
+        id="titulo"
+        maxlength="100"
+        required
+      >
+
+      <label for="genero">Género</label>
+      <select id="genero" required>
+        <option value="">Elegí un género</option>
+        <option value="Romance">Romance</option>
+        <option value="Drama">Drama</option>
+        <option value="Fantasía">Fantasía</option>
+        <option value="Misterio">Misterio</option>
+        <option value="Ciencia ficción">Ciencia ficción</option>
+        <option value="Terror">Terror</option>
+        <option value="Comedia">Comedia</option>
+        <option value="Otro">Otro</option>
+      </select>
+
+      <label for="sinopsis">Sinopsis</label>
+      <textarea
+        id="sinopsis"
+        maxlength="2000"
+        placeholder="Contanos de qué trata tu historia..."
+        required
+      ></textarea>
+
+      <button type="submit" id="boton">
+        Enviar para revisión
+      </button>
+    </form>
+
+    <p id="mensaje"></p>
+
+    <p><a href="index.html">Volver a AUVERSE</a></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL =
+      'https://yahogjmwrvpqnhdvszxx.supabase.co';
+
+    const SUPABASE_KEY =
+      'sb_publishable_IO_3yIJhgIsvqO2jHoqfMQ_KBfZyX_Y';
+
+    const cliente = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const formulario = document.getElementById('formulario');
+    const mensaje = document.getElementById('mensaje');
+    const boton = document.getElementById('boton');
+
+    formulario.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+
+      boton.disabled = true;
+      mensaje.textContent = 'Enviando tu historia...';
+
+      const { data: sesionData, error: sesionError } =
+        await cliente.auth.getUser();
+
+      if (sesionError || !sesionData.user) {
+        mensaje.textContent =
+          'Necesitás iniciar sesión para enviar una historia.';
+        boton.disabled = false;
+        return;
+      }
+
+      const historia = {
+        author_id: sesionData.user.id,
+        title: document.getElementById('titulo').value.trim(),
+        genre: document.getElementById('genero').value,
+        synopsis: document.getElementById('sinopsis').value.trim(),
+        status: 'pending'
+      };
+
+      const { error } = await cliente
+        .from('stories')
+        .insert(historia);
+
+      boton.disabled = false;
+
+      if (error) {
+        mensaje.textContent =
+          'No pudimos enviar tu historia: ' + error.message;
+        return;
+      }
+
+      mensaje.textContent =
+        '¡Tu historia fue enviada! Está pendiente de revisión.';
+
+      formulario.reset();
+    });
+  </script>
+</body>
+  </html>
+  
