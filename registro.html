@@ -118,16 +118,15 @@
 
   <script>
     const SUPABASE_URL =
-      'https://yahogjmwrvpqnhdvszxx.supabase.co';
+  'https://yahogjmwrvpqnhdvszxx.supabase.co';
 
-    const SUPABASE_KEY =
-      'sb_publishable_';
+const SUPABASE_KEY =
+  'sb_publishable_IO_3yIJhgIsvqO2jHoqfMQ_KBfZyX_Y';
 
-    const cliente = window.supabase.createClient(
-      SUPABASE_URL,
-      sb_publishable_IO_3yIJhgIsvqO2jHoqfMQ_KBfZyX_Y
-    );
-
+const cliente = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
     const formulario = document.getElementById('formulario');
     const mensaje = document.getElementById('mensaje');
     const boton = document.getElementById('boton');
